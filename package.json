@@ -1,0 +1,38 @@
+{
+  "name": "adaptive-payment-orchestration",
+  "version": "1.0.0",
+  "description": "Chapter 4 prototype: Adaptive Payment Orchestration Framework (MAPE-K)",
+  "main": "src/server.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --runInBand"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seyi-js/mit-project-2026.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seyi-js/mit-project-2026/issues"
+  },
+  "homepage": "https://github.com/seyi-js/mit-project-2026#readme",
+  "engines": {
+    "node": ">=24.4.0"
+  },
+  "dependencies": {
+    "dotenv": "17.4.2",
+    "express": "5.2.1",
+    "mongoose": "9.10.0"
+  },
+  "devDependencies": {
+    "jest": "30.5.1",
+    "nodemon": "3.1.14",
+    "supertest": "7.2.2"
+  }
+}
