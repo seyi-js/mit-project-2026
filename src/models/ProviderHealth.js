@@ -7,7 +7,7 @@ const ObservationSchema = new mongoose.Schema(
     latencyMs: { type: Number, required: true },
     errorIndicator: { type: Number, enum: BINARY_INDICATOR, required: true },
     timeoutIndicator: { type: Number, enum: BINARY_INDICATOR, required: true },
-    observedValue: { type: Number, min: 0, max: 1, required: true },
+    observedValue: { type: Number, min: 0, max: 1, default: null },
   },
   { _id: false }
 );
