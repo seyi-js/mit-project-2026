@@ -49,6 +49,13 @@ const ADAPTIVE_STRATEGY = {
 
 const ROLLING_WINDOW_SIZE = 200; // observations retained per provider for Monitor history
 
+// Not specified in Chapter 3 — implementation defaults for the Executor's
+// circuit breaker. Shared identically across all 4 strategies regardless.
+const CIRCUIT_BREAKER = {
+  FAILURE_THRESHOLD: 5,
+  RESET_TIMEOUT_MS: 10000,
+};
+
 const TRANSACTIONS_PER_RUN = 10000;
 const RUNS_PER_STRATEGY = 10;
 
@@ -68,6 +75,7 @@ module.exports = {
   MAX_DISPATCH_ATTEMPTS,
   ADAPTIVE_STRATEGY,
   ROLLING_WINDOW_SIZE,
+  CIRCUIT_BREAKER,
   TRANSACTIONS_PER_RUN,
   RUNS_PER_STRATEGY,
 };
