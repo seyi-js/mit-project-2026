@@ -1,3 +1,8 @@
+// Entry point for the live orchestration service: `npm start` (port 3000).
+// NOT required for running experiments (experiment/runOne.js and runAll.js
+// call the pipeline directly, in-process) — only needed if you actually want
+// to hit the Transaction API over real HTTP. Either way, the provider
+// simulators (src/providers/server.js) need to be running too.
 require('dotenv').config();
 const { createApp } = require('./app');
 const { connectDB } = require('./config/db');

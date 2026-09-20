@@ -1,4 +1,4 @@
-const { isCallAllowed, recordSuccess, recordFailure } = require('../src/executor/circuitBreaker');
+const { isCallAllowed, recordSuccess, recordFailure, recordBlockedAttempt } = require('../src/executor/circuitBreaker');
 
 describe('isCallAllowed', () => {
   test('allows calls when closed', () => {
@@ -19,15 +19,15 @@ describe('recordSuccess', () => {
     expect(recordSuccess()).toEqual({
       state: 'closed',
       consecutiveFailures: 0,
+      blockedAttempts: 0,
       openedAt: null,
-      nextRetryAt: null,
       lastFailureAt: null,
     });
   });
 });
 
 describe('recordFailure', () => {
-  const config = { failureThreshold: 3, resetTimeoutMs: 10000 };
+  const config = { failureThreshold: 3 };
   const now = new Date('2026-01-01T00:00:00.000Z');
 
   test('stays closed while under the failure threshold', () => {
@@ -40,13 +40,37 @@ describe('recordFailure', () => {
     expect(next).toMatchObject({
       state: 'open',
       consecutiveFailures: 3,
+      blockedAttempts: 0,
       openedAt: now,
-      nextRetryAt: new Date(now.getTime() + config.resetTimeoutMs),
     });
   });
 
   test('a failed probe while half_open immediately reopens, regardless of threshold', () => {
     const next = recordFailure({ state: 'half_open', consecutiveFailures: 0 }, now, config);
     expect(next.state).toBe('open');
+  });
+});
+
+describe('recordBlockedAttempt', () => {
+  const config = { resetAfterAttempts: 3 };
+
+  test('increments the blocked-attempt counter while under the reset threshold', () => {
+    const next = recordBlockedAttempt({ state: 'open', blockedAttempts: 0 }, config);
+    expect(next).toMatchObject({ state: 'open', blockedAttempts: 1 });
+  });
+
+  test('flips to half_open and resets the counter once the threshold is reached', () => {
+    const next = recordBlockedAttempt({ state: 'open', blockedAttempts: 2 }, config);
+    expect(next).toMatchObject({ state: 'half_open', blockedAttempts: 0 });
+  });
+
+  test('recovery is purely a function of call count, not elapsed time', () => {
+    // Feed it 3 blocked attempts back-to-back with no time passing at all —
+    // this is exactly the scenario that broke the old wall-clock design.
+    let state = { state: 'open', blockedAttempts: 0 };
+    state = recordBlockedAttempt(state, config);
+    state = recordBlockedAttempt(state, config);
+    state = recordBlockedAttempt(state, config);
+    expect(state.state).toBe('half_open');
   });
 });

@@ -9,7 +9,13 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "jest --runInBand --watchman=false"
+    "test": "jest --runInBand --watchman=false",
+    "experiment": "node src/experiment/runOne.js",
+    "experiment:all": "node src/experiment/runAll.js",
+    "start:providers": "node src/providers/server.js",
+    "analyse:metrics": "node src/analysis/exportRunMetrics.js",
+    "analyse:stats": "analysis/venv/bin/python analysis/statistics.py",
+    "analyse:sensitivity": "node src/analysis/sensitivity.js"
   },
   "repository": {
     "type": "git",

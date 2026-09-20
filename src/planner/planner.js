@@ -1,3 +1,8 @@
+// The "Plan" phase of MAPE-K (Section 2) and the single entry point for
+// getting a routing strategy — nothing outside this folder imports the
+// individual strategy files directly. Used by api/transactionApi.js's
+// PUT /strategy admin endpoint (live service) and experiment/experimentRunner.js
+// (batch runs) alike.
 const { ROUTING_STRATEGIES } = require('../config/constants');
 const { createSingleProviderStrategy } = require('./strategies/singleProviderStrategy');
 const { createStaticRuleBasedStrategy } = require('./strategies/staticRuleBasedStrategy');
