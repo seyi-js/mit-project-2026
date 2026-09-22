@@ -26,12 +26,26 @@ ALPHA = 0.05
 ADAPTIVE = "adaptive-health-scored"
 
 # (json key, display name, whether lower is better)
+#
+# firstAttemptSuccessRate and responseTimeMeanSuccessOnly are not among
+# Section 7's six DVs. They are included because the Section 7 definitions
+# are confounded on their own:
+#   - successRate cannot separate routing quality from retry capability; a
+#     strategy with no routing intelligence but three attempts scores the
+#     same as a perfect one. First-attempt success isolates the Planner.
+#   - responseTimeMean mixes successes with failures, so a strategy that
+#     fails fast looks quicker than one that succeeds slowly.
 METRICS = [
+    ("firstAttemptSuccessRate", "First-attempt success rate", False),
     ("successRate", "Transaction success rate", False),
-    ("responseTimeMean", "Response time (mean, ms)", True),
+    ("responseTimeMean", "Response time (mean, all tx, ms)", True),
+    ("responseTimeMeanSuccessOnly", "Response time (mean, successes only, ms)", True),
     ("responseTimeP95", "Response time (p95, ms)", True),
     ("failoverLatencyMean", "Failover latency (mean, ms)", True),
-    ("adaptationLatencyMean", "Adaptation latency (transactions)", True),
+    ("retriedTransactions", "Retried transactions per run", True),
+    # Reported only so the confounded figure is visible next to the corrected
+    # one below; do NOT cite this row — see the COMMON-events section.
+    ("adaptationLatencyMean", "Adaptation latency [CONFOUNDED-do not cite]", True),
     ("recoveryTimeMean", "Recovery time (transactions)", True),
 ]
 
@@ -184,6 +198,44 @@ def main():
             print(f"    effect:     {outcome['effect_name']} = {outcome['effect_size']:.4f} "
                   f"({outcome['effect_label']})")
         print()
+
+    # Adaptation latency, restricted to events BOTH strategies detected in
+    # every run. Aggregating over all detected events is not a comparison:
+    # strategies detect different subsets (a strategy that only ever dispatches
+    # to one provider can only ever detect that provider's faults), and
+    # undetected events are dropped as null rather than penalised, which
+    # flatters whichever strategy diverted traffic away fastest.
+    print("=" * 100)
+    print("Adaptation latency — RESTRICTED to fault events both strategies detected in all runs")
+    print("=" * 100)
+    n_events = len(results[ADAPTIVE][0]["adaptationByEvent"])
+
+    def detected_always(strategy, event_idx):
+        return all(r["adaptationByEvent"][event_idx] is not None for r in results[strategy])
+
+    for baseline in sorted(baselines):
+        common = [i for i in range(n_events) if detected_always(ADAPTIVE, i) and detected_always(baseline, i)]
+        print(f"\n  {ADAPTIVE}  vs  {baseline}")
+        if not common:
+            print("    NOT TESTABLE — no fault event was detected by both strategies in all runs")
+            continue
+
+        a = [float(np.mean([r["adaptationByEvent"][i] for i in common])) for r in results[ADAPTIVE]]
+        b = [float(np.mean([r["adaptationByEvent"][i] for i in common])) for r in results[baseline]]
+        outcome = compare(a, b)
+        print(f"    common events: {common} (of {n_events})")
+        if not outcome["testable"]:
+            print(f"    NOT TESTABLE — {outcome['reason']}")
+            continue
+        direction = "better" if outcome["adaptive_mean"] < outcome["baseline_mean"] else "worse"
+        sig = "SIGNIFICANT" if outcome["p_value"] < ALPHA else "not significant"
+        print(f"    means:      adaptive {outcome['adaptive_mean']:.4f}  |  "
+              f"baseline {outcome['baseline_mean']:.4f}   ({direction} for adaptive)")
+        print(f"    test:       {outcome['test']}, p={outcome['p_value']:.6g} ({sig})")
+        print(f"    effect:     {outcome['effect_name']} = {outcome['effect_size']:.4f} "
+              f"({outcome['effect_label']})")
+        summary[("Adaptation latency (COMMON events)", baseline)] = outcome
+    print()
 
     # Chapter 4 summary table
     print("=" * 100)

@@ -1,0 +1,240 @@
+
+
+Degradation threshold: 0.5   |   alpha = 0.05
+Fault schedule: chapter4-default-v1
+Runs per strategy: 10
+
+====================================================================================================
+First-attempt success rate
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 0.9897  |  baseline 0.9409   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.6638 / 0.9665 (normal)
+    test:       Independent-samples t-test, statistic=42.0047
+    p-value:    2.03551e-19   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = 18.7851 (large)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 0.9897  |  baseline 0.9432   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.6638 / 0.1414 (normal)
+    test:       Independent-samples t-test, statistic=40.5161
+    p-value:    3.87207e-19   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = 18.1193 (large)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 0.9897  |  baseline 0.9495   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.6638 / 0.1211 (normal)
+    test:       Independent-samples t-test, statistic=49.0983
+    p-value:    1.25575e-20   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = 21.9574 (large)
+
+====================================================================================================
+Transaction success rate
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    NOT TESTABLE — both groups constant at identical value 1.0000 — no test is defined (identical, zero-variance samples)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 1.0000  |  baseline 0.9432   (better for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=100.0000
+    p-value:    6.34029e-05   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = -1.0000 (large)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 1.0000  |  baseline 0.9495   (better for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=100.0000
+    p-value:    6.38644e-05   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = -1.0000 (large)
+
+====================================================================================================
+Response time (mean, all tx, ms)
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 15.4665  |  baseline 39.0558   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.9702 (normal)
+    test:       Independent-samples t-test, statistic=-10.6141
+    p-value:    3.54183e-09   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -4.7468 (large)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 15.4665  |  baseline 45.2800   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.4411 (normal)
+    test:       Independent-samples t-test, statistic=-11.9277
+    p-value:    5.5617e-10   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -5.3342 (large)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 15.4665  |  baseline 76.1800   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.1873 (normal)
+    test:       Independent-samples t-test, statistic=-30.1804
+    p-value:    7.21118e-17   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -13.4971 (large)
+
+====================================================================================================
+Response time (mean, successes only, ms)
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 15.4665  |  baseline 39.0558   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.9702 (normal)
+    test:       Independent-samples t-test, statistic=-10.6141
+    p-value:    3.54183e-09   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -4.7468 (large)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 15.4665  |  baseline 3.7958   (worse for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.4350 (normal)
+    test:       Independent-samples t-test, statistic=20.1095
+    p-value:    8.76528e-14   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = 8.9933 (large)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 15.4665  |  baseline 50.2749   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.9744 / 0.5625 (normal)
+    test:       Independent-samples t-test, statistic=-22.6213
+    p-value:    1.13772e-14   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -10.1165 (large)
+
+====================================================================================================
+Response time (p95, ms)
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 5.0000  |  baseline 5.4000   (better for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=30.0000
+    p-value:    0.0335897   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = 0.4000 (small)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 5.0000  |  baseline 5.7000   (better for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=25.0000
+    p-value:    0.0146069   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = 0.5000 (medium)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 5.0000  |  baseline 7.1000   (better for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=0.0000
+    p-value:    5.59417e-05   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = 1.0000 (large)
+
+====================================================================================================
+Failover latency (mean, ms)
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 12.4232  |  baseline 8.1222   (worse for adaptive)
+    normality:  Shapiro-Wilk p=0.5655 / 0.6308 (normal)
+    test:       Independent-samples t-test, statistic=7.6911
+    p-value:    4.27441e-07   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = 3.4395 (large)
+
+  adaptive-health-scored  vs  single-provider
+    NOT TESTABLE — insufficient data (adaptive n=10, baseline n=0); metric is undefined for at least one strategy
+
+  adaptive-health-scored  vs  static-rule-based
+    NOT TESTABLE — insufficient data (adaptive n=10, baseline n=0); metric is undefined for at least one strategy
+
+====================================================================================================
+Retried transactions per run
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    means:      adaptive 102.5000  |  baseline 590.9000   (better for adaptive)
+    normality:  Shapiro-Wilk p=0.6638 / 0.9665 (normal)
+    test:       Independent-samples t-test, statistic=-42.0047
+    p-value:    2.03551e-19   (SIGNIFICANT at alpha=0.05)
+    effect:     Cohen's d = -18.7851 (large)
+
+  adaptive-health-scored  vs  single-provider
+    means:      adaptive 102.5000  |  baseline 0.0000   (worse for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=100.0000
+    p-value:    6.34029e-05   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = -1.0000 (large)
+
+  adaptive-health-scored  vs  static-rule-based
+    means:      adaptive 102.5000  |  baseline 0.0000   (worse for adaptive)
+    normality:  one group constant — non-parametric branch
+    test:       Mann-Whitney U, statistic=100.0000
+    p-value:    6.34029e-05   (SIGNIFICANT at alpha=0.05)
+    effect:     rank-biserial r = -1.0000 (large)
+
+====================================================================================================
+Adaptation latency [CONFOUNDED-do not cite]
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+  adaptive-health-scored  vs  single-provider
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+  adaptive-health-scored  vs  static-rule-based
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+====================================================================================================
+Recovery time (transactions)
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+  adaptive-health-scored  vs  single-provider
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+  adaptive-health-scored  vs  static-rule-based
+    NOT TESTABLE — insufficient data (adaptive n=0, baseline n=0); metric is undefined for at least one strategy
+
+====================================================================================================
+Adaptation latency — RESTRICTED to fault events both strategies detected in all runs
+====================================================================================================
+
+  adaptive-health-scored  vs  cascading-failover
+    NOT TESTABLE — no fault event was detected by both strategies in all runs
+
+  adaptive-health-scored  vs  single-provider
+    NOT TESTABLE — no fault event was detected by both strategies in all runs
+
+  adaptive-health-scored  vs  static-rule-based
+    NOT TESTABLE — no fault event was detected by both strategies in all runs
+
+====================================================================================================
+SUMMARY — adaptive vs each baseline
+====================================================================================================
+Metric                               Baseline                 p-value        Effect size            Verdict
+----------------------------------------------------------------------------------------------------
+First-attempt success rate           cascading-failover       2.03551e-19    Cohen's d=18.785       significant
+First-attempt success rate           single-provider          3.87207e-19    Cohen's d=18.119       significant
+First-attempt success rate           static-rule-based        1.25575e-20    Cohen's d=21.957       significant
+Transaction success rate             cascading-failover       n/a            n/a                    not testable
+Transaction success rate             single-provider          6.34029e-05    rank-biserial r=-1.000 significant
+Transaction success rate             static-rule-based        6.38644e-05    rank-biserial r=-1.000 significant
+Response time (mean, all tx, ms)     cascading-failover       3.54183e-09    Cohen's d=-4.747       significant
+Response time (mean, all tx, ms)     single-provider          5.5617e-10     Cohen's d=-5.334       significant
+Response time (mean, all tx, ms)     static-rule-based        7.21118e-17    Cohen's d=-13.497      significant
+Response time (mean, successes only, ms) cascading-failover       3.54183e-09    Cohen's d=-4.747       significant
+Response time (mean, successes only, ms) single-provider          8.76528e-14    Cohen's d=8.993        significant
+Response time (mean, successes only, ms) static-rule-based        1.13772e-14    Cohen's d=-10.117      significant
+Response time (p95, ms)              cascading-failover       0.0335897      rank-biserial r=0.400  significant
+Response time (p95, ms)              single-provider          0.0146069      rank-biserial r=0.500  significant
+Response time (p95, ms)              static-rule-based        5.59417e-05    rank-biserial r=1.000  significant
+Failover latency (mean, ms)          cascading-failover       4.27441e-07    Cohen's d=3.440        significant
+Failover latency (mean, ms)          single-provider          n/a            n/a                    not testable
+Failover latency (mean, ms)          static-rule-based        n/a            n/a                    not testable
+Retried transactions per run         cascading-failover       2.03551e-19    Cohen's d=-18.785      significant
+Retried transactions per run         single-provider          6.34029e-05    rank-biserial r=-1.000 significant
+Retried transactions per run         static-rule-based        6.34029e-05    rank-biserial r=-1.000 significant
+Adaptation latency [CONFOUNDED-do not cite] cascading-failover       n/a            n/a                    not testable
+Adaptation latency [CONFOUNDED-do not cite] single-provider          n/a            n/a                    not testable
+Adaptation latency [CONFOUNDED-do not cite] static-rule-based        n/a            n/a                    not testable
+Recovery time (transactions)         cascading-failover       n/a            n/a                    not testable
+Recovery time (transactions)         single-provider          n/a            n/a                    not testable
+Recovery time (transactions)         static-rule-based        n/a            n/a                    not testable

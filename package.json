@@ -15,7 +15,8 @@
     "start:providers": "node src/providers/server.js",
     "analyse:metrics": "node src/analysis/exportRunMetrics.js",
     "analyse:stats": "analysis/venv/bin/python analysis/statistics.py",
-    "analyse:sensitivity": "node src/analysis/sensitivity.js"
+    "analyse:sensitivity": "node src/analysis/sensitivity.js",
+    "analyse:conditions": "node src/analysis/conditionSplit.js"
   },
   "repository": {
     "type": "git",

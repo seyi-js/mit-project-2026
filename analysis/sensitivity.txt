@@ -1,0 +1,45 @@
+
+
+Loading logged runs...
+
+================================================================================================
+DEGRADATION THRESHOLD SENSITIVITY (Section 4 Step 4)
+================================================================================================
+Success rate is shown to confirm it is INVARIANT to the threshold — in this implementation
+the threshold never influenced routing, so it cannot affect transaction success.
+
+Strategy                 Threshold  Success    AdaptLatency   RecoveryTime   Events detected
+------------------------------------------------------------------------------------------------
+single-provider          0.4        94.32      n/a            n/a            0.0 of 7
+single-provider          0.5        94.32      n/a            n/a            0.0 of 7
+single-provider          0.6        94.32      20.25          1.00           2.0 of 7
+------------------------------------------------------------------------------------------------
+static-rule-based        0.4        94.95      n/a            n/a            0.0 of 7
+static-rule-based        0.5        94.95      n/a            n/a            0.0 of 7
+static-rule-based        0.6        94.95      15.42          1.00           5.0 of 7
+------------------------------------------------------------------------------------------------
+cascading-failover       0.4        100.00     n/a            n/a            0.0 of 7
+cascading-failover       0.5        100.00     n/a            n/a            0.0 of 7
+cascading-failover       0.6        100.00     15.40          1.00           2.0 of 7
+------------------------------------------------------------------------------------------------
+adaptive-health-scored   0.4        100.00     n/a            n/a            0.0 of 7
+adaptive-health-scored   0.5        100.00     n/a            n/a            0.0 of 7
+adaptive-health-scored   0.6        100.00     7.90           1.00           4.0 of 7
+------------------------------------------------------------------------------------------------
+
+================================================================================================
+HEALTH-SCORE WEIGHT SENSITIVITY (Section 4 Step 2)
+================================================================================================
+Evaluated at threshold 0.6, the only value at which these metrics are measurable under the
+brief default weights. Shows how the adaptive strategy's measured adaptation latency compares
+with each baseline when the logged attempts are re-scored under a different weighting.
+
+Weighting                      adaptive     cascading    single       static       adaptive best?
+------------------------------------------------------------------------------------------------
+brief default (.25/.50/.25)    7.90         15.40        20.25        15.42        yes
+latency-heavy (.50/.25/.25)    4.70         7.40         7.00         28.25        yes
+error-heavy   (.15/.70/.15)    4.60         4.50         4.50         5.70         no
+timeout-heavy (.25/.25/.50)    4.70         7.40         7.00         4.63         no
+equal         (.34/.33/.33)    5.08         9.10         7.80         6.07         yes
+
+Adaptation latency is in transactions dispatched to the faulted provider (lower is better).

@@ -130,19 +130,34 @@ function computeRunMetrics(
   { threshold = DEGRADATION_THRESHOLD_DEFAULT, weights = undefined } = {}
 ) {
   const ordered = [...logs].sort((a, b) => a.transactionIndex - b.transactionIndex);
+  const elapsed = (l) => new Date(l.attempts[l.attempts.length - 1].respondedAt) - new Date(l.attempts[0].dispatchedAt);
 
   // 1. Transaction success rate
   const successes = ordered.filter((l) => l.finalOutcome === 'success').length;
   const successRate = successes / ordered.length;
 
-  // 2. Response time: API submission -> final outcome, per transaction
-  const responseTimes = ordered
-    .filter((l) => l.attempts.length > 0)
-    .map((l) => {
-      const first = l.attempts[0];
-      const last = l.attempts[l.attempts.length - 1];
-      return new Date(last.respondedAt) - new Date(first.dispatchedAt);
-    });
+  // 1b. First-attempt success rate. NOT one of Section 7's six DVs, but it is
+  //     the only measure here that isolates ROUTING QUALITY from retry
+  //     capability: it asks whether the Planner's first choice was correct,
+  //     independent of whether a fallback later rescued the transaction.
+  //     Section 7's success rate cannot distinguish "routed well" from
+  //     "retried until something worked" — a strategy with no routing
+  //     intelligence but three attempts scores identically to a perfect one.
+  const firstAttemptSuccesses = ordered.filter(
+    (l) => l.attempts.length > 0 && l.attempts[0].outcome === 'success'
+  ).length;
+  const firstAttemptSuccessRate = firstAttemptSuccesses / ordered.length;
+
+  // 2. Response time: API submission -> final outcome, per transaction.
+  //    Reported over all transactions (as Section 7 defines it) AND over
+  //    successes only, because the two diverge sharply for strategies that
+  //    fail often: a fast failure lowers the all-transaction mean, so a
+  //    strategy can look faster purely by failing quickly. Comparing
+  //    strategies with different success rates on the all-transaction figure
+  //    alone is not like-for-like.
+  const withAttempts = ordered.filter((l) => l.attempts.length > 0);
+  const responseTimes = withAttempts.map(elapsed);
+  const responseTimesSuccessOnly = withAttempts.filter((l) => l.finalOutcome === 'success').map(elapsed);
 
   // 3. Failover latency: extra time between the first failed attempt and the
   //    eventual final attempt, for transactions needing more than one.
@@ -160,6 +175,14 @@ function computeRunMetrics(
   const recoveryTimes = [];
   const lastIndex = ordered.length > 0 ? ordered[ordered.length - 1].transactionIndex + 1 : 0;
 
+  // Kept index-aligned with faultEvents so the statistics step can restrict
+  // comparisons to events BOTH strategies actually detected. Aggregating
+  // straight to a mean hides that different strategies detect different
+  // subsets of faults — a strategy that only ever touches one provider can
+  // only detect that provider's faults — which makes the means incomparable.
+  const adaptationByEvent = [];
+  const recoveryByEvent = [];
+
   for (const event of faultEvents) {
     const adapt = adaptationLatency(
       timeline,
@@ -168,6 +191,7 @@ function computeRunMetrics(
       event.endTransactionIndex,
       threshold
     );
+    adaptationByEvent.push(adapt);
     if (adapt !== null) adaptationLatencies.push(adapt);
 
     // Recovery is measured up until this provider's NEXT fault begins, so a
@@ -177,20 +201,27 @@ function computeRunMetrics(
       .reduce((min, e) => Math.min(min, e.startTransactionIndex), lastIndex);
 
     const recover = recoveryTime(timeline, event.providerId, event.endTransactionIndex, nextFaultStart, threshold);
+    recoveryByEvent.push(recover);
     if (recover !== null) recoveryTimes.push(recover);
   }
 
   return {
     transactions: ordered.length,
     successRate,
+    firstAttemptSuccessRate,
     responseTimeMean: mean(responseTimes),
     responseTimeP95: percentile(responseTimes, 0.95),
+    responseTimeMeanSuccessOnly: mean(responseTimesSuccessOnly),
+    responseTimeP95SuccessOnly: percentile(responseTimesSuccessOnly, 0.95),
     failoverLatencyMean: mean(failoverLatencies),
     failoverLatencyCount: failoverLatencies.length,
+    retriedTransactions: failoverLatencies.length,
     adaptationLatencyMean: mean(adaptationLatencies),
     adaptationLatencyCount: adaptationLatencies.length,
+    adaptationByEvent,
     recoveryTimeMean: mean(recoveryTimes),
     recoveryTimeCount: recoveryTimes.length,
+    recoveryByEvent,
   };
 }
 

@@ -1,0 +1,46 @@
+
+> adaptive-payment-orchestration@1.0.0 analyse:metrics
+> node src/analysis/exportRunMetrics.js 0.6
+
+single-provider-run-1          success 94.34%  RT 45.3ms  p95 6ms  failover n/a  adapt 49.5  recover 1.0
+single-provider-run-10         success 94.08%  RT 41.8ms  p95 5ms  failover n/a  adapt 9.5  recover 1.0
+single-provider-run-2          success 94.79%  RT 52.7ms  p95 7ms  failover n/a  adapt 12.5  recover 1.0
+single-provider-run-3          success 94.20%  RT 39.7ms  p95 7ms  failover n/a  adapt 5.5  recover 1.0
+single-provider-run-4          success 93.92%  RT 36.3ms  p95 6ms  failover n/a  adapt 24.5  recover 1.0
+single-provider-run-5          success 94.72%  RT 52.7ms  p95 6ms  failover n/a  adapt 14.5  recover 1.0
+single-provider-run-6          success 94.25%  RT 49.4ms  p95 5ms  failover n/a  adapt 15.5  recover 1.0
+single-provider-run-7          success 94.76%  RT 58.4ms  p95 5ms  failover n/a  adapt 21.0  recover 1.0
+single-provider-run-8          success 93.96%  RT 36.1ms  p95 5ms  failover n/a  adapt 13.0  recover 1.0
+single-provider-run-9          success 94.20%  RT 40.4ms  p95 5ms  failover n/a  adapt 37.0  recover 1.0
+static-rule-based-run-1        success 94.91%  RT 87.8ms  p95 8ms  failover n/a  adapt 16.2  recover 1.0
+static-rule-based-run-10       success 95.16%  RT 74.3ms  p95 6ms  failover n/a  adapt 9.8  recover 1.0
+static-rule-based-run-2        success 95.19%  RT 74.4ms  p95 8ms  failover n/a  adapt 26.8  recover 1.0
+static-rule-based-run-3        success 95.06%  RT 67.0ms  p95 7ms  failover n/a  adapt 15.6  recover 1.0
+static-rule-based-run-4        success 94.60%  RT 72.5ms  p95 6ms  failover n/a  adapt 8.0  recover 1.0
+static-rule-based-run-5        success 94.98%  RT 84.9ms  p95 7ms  failover n/a  adapt 11.8  recover 1.0
+static-rule-based-run-6        success 95.08%  RT 73.0ms  p95 8ms  failover n/a  adapt 13.4  recover 1.0
+static-rule-based-run-7        success 94.61%  RT 78.2ms  p95 8ms  failover n/a  adapt 19.4  recover 1.0
+static-rule-based-run-8        success 94.93%  RT 75.4ms  p95 7ms  failover n/a  adapt 14.6  recover 1.0
+static-rule-based-run-9        success 94.99%  RT 74.2ms  p95 6ms  failover n/a  adapt 18.6  recover 1.0
+cascading-failover-run-1       success 100.00%  RT 46.1ms  p95 5ms  failover 8.8ms  adapt 25.0  recover 1.0
+cascading-failover-run-10      success 100.00%  RT 40.3ms  p95 5ms  failover 7.9ms  adapt 9.0  recover 1.0
+cascading-failover-run-2       success 100.00%  RT 31.0ms  p95 5ms  failover 7.1ms  adapt 17.5  recover 1.0
+cascading-failover-run-3       success 100.00%  RT 37.6ms  p95 5ms  failover 8.0ms  adapt 10.5  recover 1.0
+cascading-failover-run-4       success 100.00%  RT 43.0ms  p95 5ms  failover 8.2ms  adapt 11.5  recover 1.0
+cascading-failover-run-5       success 100.00%  RT 49.2ms  p95 6ms  failover 9.5ms  adapt 24.0  recover 1.0
+cascading-failover-run-6       success 100.00%  RT 27.6ms  p95 6ms  failover 6.7ms  adapt 13.0  recover 1.0
+cascading-failover-run-7       success 100.00%  RT 36.4ms  p95 5ms  failover 7.8ms  adapt 15.5  recover 1.0
+cascading-failover-run-8       success 100.00%  RT 44.0ms  p95 6ms  failover 9.4ms  adapt 15.0  recover 1.0
+cascading-failover-run-9       success 100.00%  RT 35.3ms  p95 6ms  failover 7.9ms  adapt 13.0  recover 1.0
+adaptive-health-scored-run-1   success 100.00%  RT 16.8ms  p95 5ms  failover 12.9ms  adapt 10.6  recover 1.0
+adaptive-health-scored-run-10  success 100.00%  RT 18.7ms  p95 5ms  failover 13.5ms  adapt 7.3  recover 1.0
+adaptive-health-scored-run-2   success 100.00%  RT 16.3ms  p95 5ms  failover 13.5ms  adapt 10.8  recover 1.0
+adaptive-health-scored-run-3   success 100.00%  RT 16.0ms  p95 5ms  failover 9.9ms  adapt 7.4  recover 1.0
+adaptive-health-scored-run-4   success 100.00%  RT 13.5ms  p95 5ms  failover 14.4ms  adapt 9.5  recover 1.0
+adaptive-health-scored-run-5   success 100.00%  RT 14.9ms  p95 5ms  failover 14.1ms  adapt 7.4  recover 1.0
+adaptive-health-scored-run-6   success 100.00%  RT 14.6ms  p95 5ms  failover 12.5ms  adapt 6.8  recover 1.0
+adaptive-health-scored-run-7   success 100.00%  RT 12.6ms  p95 5ms  failover 10.7ms  adapt 6.8  recover 1.0
+adaptive-health-scored-run-8   success 100.00%  RT 16.9ms  p95 5ms  failover 11.8ms  adapt 7.0  recover 1.0
+adaptive-health-scored-run-9   success 100.00%  RT 14.4ms  p95 5ms  failover 10.9ms  adapt 5.5  recover 1.0
+
+Wrote /Users/seyijs/Projeects/personal/mit-project/analysis/run_metrics.json
