@@ -3,11 +3,17 @@
 Transactions inside a fault window: 2600 of 10000 (26.0%)
 Routing only matters inside these; outside them all strategies are equivalent.
 
-Strategy                  outside     INSIDE                misrouted 1st attempts
-----------------------------------------------------------------------------------------
-single-provider           99.76%      78.85% (sd 1.28)      26.92% (sd 0.00)
-static-rule-based         99.60%      81.72% (sd 0.73)      31.61% (sd 1.07)
-cascading-failover        99.82%      77.78% (sd 1.29)      26.92% (sd 0.00)
-adaptive-health-scored    99.60%      97.19% (sd 0.37)      5.36% (sd 0.34)
+Strategy                  1st-attempt success               misrouted 1st attempts
+                          outside     INSIDE                outcome-affecting   latency-only
+------------------------------------------------------------------------------------------------
+single-provider           99.76%      78.85% (sd 1.28)      43.75% (sd 0.00)    0.00%
+static-rule-based         99.60%      81.72% (sd 0.73)      36.11% (sd 1.06)    24.42%
+cascading-failover        99.82%      77.78% (sd 1.29)      43.75% (sd 0.00)    0.00%
+adaptive-health-scored    99.60%      97.19% (sd 0.37)      5.74% (sd 0.44)     4.74%
+
+HEADLINE misrouting = outcome-affecting column. The latency-only column is NOT
+comparable across strategies: both degraded_latency windows fall on providers B and C,
+and single-provider/cascading-failover never send a first attempt anywhere but A, so
+their 0% reflects where the faults were placed rather than any routing decision.
 
 Wrote /Users/seyijs/Projeects/personal/mit-project/analysis/condition_split.json

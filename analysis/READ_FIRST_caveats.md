@@ -134,25 +134,37 @@ In order of strength:
    every provider is healthy and routing choice is irrelevant. Averaging across the
    whole run therefore dilutes the effect roughly fourfold. Split by condition:
 
-   | Strategy | outside windows | inside windows | misrouted 1st attempts |
-   |---|---|---|---|
-   | single-provider | 99.76% | 78.85% | 26.92% (sd 0.00) |
-   | static-rule-based | 99.60% | 81.72% | 31.61% |
-   | cascading-failover | 99.82% | 77.78% | 26.92% (sd 0.00) |
-   | adaptive-health-scored | 99.60% | **97.19%** | **5.36%** |
+   | Strategy | outside windows | inside windows | misrouted (outcome-affecting) | misrouted (latency-only) |
+   |---|---|---|---|---|
+   | single-provider | 99.76% | 78.85% | 43.75% (sd 0.00) | 0.00% |
+   | static-rule-based | 99.60% | 81.72% | 36.11% | 24.42% |
+   | cascading-failover | 99.82% | 77.78% | 43.75% (sd 0.00) | 0.00% |
+   | adaptive-health-scored | 99.60% | **97.19%** | **5.74%** | 4.74% |
 
-   "Misrouted" = first attempt sent to a provider that was degraded at that moment.
-   Adaptive reduces this 5–6× with **complete separation** (rank-biserial = 1.00;
-   every adaptive run beat every baseline run).
+   **"Misrouted" = first attempt sent to a provider under an active
+   OUTCOME-AFFECTING fault** (`elevated_error_rate`, `intermittent_timeout`,
+   `full_outage`) at that transaction index. `degraded_latency` is excluded from
+   the headline figure because a latency-degraded provider still returns success —
+   counting it as a routing error while the first-attempt-success metric counts it
+   as a success would be incoherent. Adaptive reduces outcome-affecting misrouting
+   **~7.6×** (5.74% vs 43.75%).
+
+   **Do NOT cite the latency-only column comparatively.** Both `degraded_latency`
+   windows fall on providers B and C, and single-provider/cascading-failover never
+   send a first attempt to anything but A — so their 0.00% reflects where the faults
+   were placed, not any routing decision. It measures the fault schedule, not the
+   strategies.
 
    Two points worth stating explicitly:
 
-   - Cascading and single-provider misroute at an *identical* 26.92% with sd = 0.00
-     — the base rate, because both always try Provider A first and exercise no
-     routing judgement. Static-rule-based is *worse than chance* (31.61%) because
-     its fixed weights send half its traffic to A, which carries two of the seven
-     fault events. Only the adaptive strategy makes a decision at all.
-   - Adaptive's residual 5.36% is approximately its own **exploration budget**: it
+   - Cascading and single-provider misroute at an *identical* 43.75% with sd = 0.00.
+     That is exactly Provider A's share of outcome-affecting fault transactions
+     (700 of 1600) — confirming both simply dispatch to A regardless of its state
+     and exercise no routing judgement whatsoever. Static-rule-based (36.11%) is
+     barely better despite spreading traffic, because its fixed weights send half
+     of it to A, which carries two of the seven fault events. Only the adaptive
+     strategy makes a decision at all.
+   - Adaptive's residual 5.74% is approximately its own **exploration budget**: it
      deliberately routes 10% of first attempts away from the top-ranked provider,
      which with one of three providers degraded predicts ~5% landing on a faulted
      one. The 90% exploitation path is therefore almost never misrouting — the
@@ -178,7 +190,8 @@ In order of strength:
 
 **Suggested framing**: under provider degradation, health-scored routing selects a
 healthy provider on the first attempt 97.2% of the time versus 77.8–81.7% for all
-three baselines, reducing misrouted first attempts 5–6×. This yields ~5.7× fewer
+three baselines, reducing misrouted first attempts ~7.6× (5.74% vs 43.75% on
+outcome-affecting faults). This yields ~5.7× fewer
 provider calls and materially lower latency than retry-based alternatives. The cost
 is ~0.2 percentage points of first-attempt accuracy under healthy conditions (the
 exploration budget) plus ~11.7ms per transaction of ranking overhead. Final
