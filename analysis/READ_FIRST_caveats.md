@@ -1,12 +1,33 @@
-# Read before drafting Chapter 4
+# How to read the result files
 
-These files contain results from 400,000 logged transactions (4 strategies × 10 runs
-× 10,000 transactions). Several figures in them are **confounded and must not be
-cited**. This note says which, and why.
+These files hold the raw output of the evaluation: 400,000 logged transactions
+(4 strategies × 10 runs × 10,000 transactions), the per-run metrics computed from
+them, and the significance tests.
+
+Some of the raw output is not directly interpretable. Two metrics are confounded by
+the experimental design, one is degenerate, and one row is preserved in the output
+specifically so that an error remains visible beside its correction. This document
+identifies each case and explains why.
+
+**Every limitation recorded here is reported in the dissertation itself**, in the
+section named against it below. Nothing in this file is a caveat that the write-up
+omits; it exists so that anyone working directly with the raw files reaches the same
+conclusions the chapter does, rather than reading a number at face value.
+
+| Issue | Discussed in |
+| --- | --- |
+| The degradation threshold cannot fire at its specified value | Section 4.5.1 |
+| Adaptation latency is confounded by unequal event detection | Section 4.5.8 |
+| Transaction success rate cannot discriminate between retry-capable strategies | Section 4.5.2 |
+| Response time must be read on successful transactions only | Section 4.5.6 |
+| Recovery time is not testable at any threshold | Section 4.5.9 |
+| Failover latency favours a baseline | Section 4.5.7 |
+| Parameters not fixed by the specification | Section 4.3 |
+| The discarded first execution | Section 4.4.2 |
 
 ---
 
-## Use the 0.6 threshold files, not 0.5
+## The 0.6 threshold files are the primary results (Section 4.5.1)
 
 `stats_threshold_0.6.txt` is the primary results file.
 
@@ -27,12 +48,12 @@ across all forty runs: **0.500381** (cascading-failover run 9, Provider A,
 transaction 8,296). A threshold of 0.5 with a
 strict `<` comparison therefore cannot fire.
 
-**Report this as a finding.** It means the brief's 0.4/0.6 sensitivity analysis is
+This is reported as a finding in Section 4.5.1. It means the brief's 0.4/0.6 sensitivity analysis is
 load-bearing rather than optional.
 
 ---
 
-## DO NOT CITE: `Adaptation latency [CONFOUNDED-do not cite]`
+## A confounded row is preserved in the output on purpose (Section 4.5.8)
 
 `stats_threshold_0.6.txt` contains a row with that literal label showing
 `p<0.001, d=-1.87` in adaptive's favour. **It is false.** It is preserved in the
@@ -65,7 +86,7 @@ result.
 
 ---
 
-## Response time: use the successes-only column against single-provider
+## Response time: read the successes-only column (Section 4.5.6)
 
 `responseTimeMean` (all transactions) mixes successes with failures, so a strategy
 that fails fast looks quicker than one that succeeds slowly.
@@ -89,7 +110,7 @@ successful transactions it is **3.80ms — roughly 4× faster than adaptive**
 
 ---
 
-## Transaction success rate measures retries, not adaptivity
+## Transaction success rate measures retry capability, not routing (Section 4.5.2)
 
 Adaptive reaches 100% versus 94.3% (single-provider) and 95.0% (static-rule-based) —
 but cascading-failover also reaches 100%. The difference is attributable to *having
@@ -106,7 +127,7 @@ reason; it pre-empts the obvious examiner question.
 
 ---
 
-## Other null / negative results to report honestly
+## Null and unfavourable results (Sections 4.5.7, 4.5.9, 4.6)
 
 - **Recovery time**: 1.0 in every run for every strategy (zero variance) — not
   testable at any threshold. With α=0.3, a single successful dispatch restores the
@@ -124,7 +145,7 @@ reason; it pre-empts the obvious examiner question.
 
 ---
 
-## What the results DO support
+## What the results support (Sections 4.5.3, 4.5.4)
 
 In order of strength:
 

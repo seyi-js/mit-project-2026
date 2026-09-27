@@ -193,10 +193,11 @@ tests/          142 tests across 23 suites
 
 ## Reading the results
 
-Start with [analysis/READ_FIRST_caveats.md](analysis/READ_FIRST_caveats.md). Several
-reported metrics do not discriminate between the strategies, and two are confounded;
-that document says which, why, and which figures should not be cited. It should be
-read before any number in `analysis/` is quoted.
+Start with [analysis/READ_FIRST_caveats.md](analysis/READ_FIRST_caveats.md). Parts of
+the raw output are not directly interpretable: two metrics are confounded by the
+experimental design and one is degenerate. That document explains each case and names
+the section of the dissertation where it is reported. Read it before quoting any
+number from `analysis/`.
 
 Large intermediate exports (`analysis/transaction_data.csv`, `analysis/health_timeseries/`)
 are not committed. Both rebuild from the transaction log in about a minute using the
