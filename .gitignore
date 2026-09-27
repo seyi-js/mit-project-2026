@@ -1,4 +1,27 @@
+# --- secrets -----------------------------------------------------------------
 .env
+
+# --- dependencies ------------------------------------------------------------
 /node_modules
-*.log
 /analysis/venv
+
+# --- OS and editor noise -----------------------------------------------------
+.DS_Store
+*.log
+
+# --- regenerable experimental exports ----------------------------------------
+# Large intermediate data. Both rebuild from the MongoDB transaction log in
+# about a minute, and the scripts that produce them are tracked, so a reviewer
+# can regenerate them without having to clone them:
+#   analysis/transaction_data.csv   (28 MB)  node src/analysis/exportTransactionData.js
+#   analysis/health_timeseries/    (6.8 MB)  node src/analysis/reconstructHealth.js
+/analysis/transaction_data.csv
+/analysis/health_timeseries/
+
+# --- evidence capture scratch ------------------------------------------------
+/analysis/evidence/pids.txt
+
+# --- personal working notes --------------------------------------------------
+# Instructions to myself for assembling the chapter, not part of the artefact
+# under review.
+/analysis/evidence/placement-guide.md

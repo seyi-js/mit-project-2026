@@ -1,0 +1,399 @@
+{
+  "validation": {
+    "lastRun": "adaptive-health-scored-run-10",
+    "comparisons": [
+      {
+        "provider": "B",
+        "live": 0.9999566957552228,
+        "reconstructed": 0.9999566957552228,
+        "absoluteError": 0
+      },
+      {
+        "provider": "C",
+        "live": 0.9999999999999996,
+        "reconstructed": 0.9999999999999996,
+        "absoluteError": 0
+      },
+      {
+        "provider": "A",
+        "live": 0.9999999999992975,
+        "reconstructed": 0.9999999999992975,
+        "absoluteError": 0
+      }
+    ],
+    "maxAbsoluteError": 0,
+    "exact": true
+  },
+  "runs": [
+    {
+      "runId": "adaptive-health-scored-run-1",
+      "transactions": 10000,
+      "observations": 10045,
+      "finalScores": {
+        "A": 0.9999999999989033,
+        "B": 0.9999934370963208,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-10",
+      "transactions": 10000,
+      "observations": 10035,
+      "finalScores": {
+        "A": 0.9999999999992975,
+        "B": 0.9999566957552228,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-2",
+      "transactions": 10000,
+      "observations": 10048,
+      "finalScores": {
+        "A": 0.9999999998361313,
+        "B": 0.9999866063190226,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-3",
+      "transactions": 10000,
+      "observations": 10032,
+      "finalScores": {
+        "A": 0.9999999999997415,
+        "B": 0.9998304653307042,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-4",
+      "transactions": 10000,
+      "observations": 10041,
+      "finalScores": {
+        "A": 0.999999999998409,
+        "B": 0.9999954084997196,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-5",
+      "transactions": 10000,
+      "observations": 10040,
+      "finalScores": {
+        "A": 0.9999999999940306,
+        "B": 0.9999999567413649,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-6",
+      "transactions": 10000,
+      "observations": 10042,
+      "finalScores": {
+        "A": 0.9999999999995082,
+        "B": 0.9999802979419941,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-7",
+      "transactions": 10000,
+      "observations": 10029,
+      "finalScores": {
+        "A": 0.9999999834365558,
+        "B": 0.9999999897112068,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-8",
+      "transactions": 10000,
+      "observations": 10036,
+      "finalScores": {
+        "A": 0.99999999999998,
+        "B": 0.9999994408568544,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "adaptive-health-scored-run-9",
+      "transactions": 10000,
+      "observations": 10030,
+      "finalScores": {
+        "A": 0.9999999999878177,
+        "B": 0.9999203089130886,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-1",
+      "transactions": 10000,
+      "observations": 10168,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-10",
+      "transactions": 10000,
+      "observations": 10151,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-2",
+      "transactions": 10000,
+      "observations": 10123,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-3",
+      "transactions": 10000,
+      "observations": 10152,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-4",
+      "transactions": 10000,
+      "observations": 10152,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-5",
+      "transactions": 10000,
+      "observations": 10192,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-6",
+      "transactions": 10000,
+      "observations": 10109,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-7",
+      "transactions": 10000,
+      "observations": 10151,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-8",
+      "transactions": 10000,
+      "observations": 10187,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "cascading-failover-run-9",
+      "transactions": 10000,
+      "observations": 10128,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-1",
+      "transactions": 10000,
+      "observations": 9601,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-10",
+      "transactions": 10000,
+      "observations": 9563,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-2",
+      "transactions": 10000,
+      "observations": 9677,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-3",
+      "transactions": 10000,
+      "observations": 9582,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-4",
+      "transactions": 10000,
+      "observations": 9544,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-5",
+      "transactions": 10000,
+      "observations": 9693,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-6",
+      "transactions": 10000,
+      "observations": 9620,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-7",
+      "transactions": 10000,
+      "observations": 9696,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-8",
+      "transactions": 10000,
+      "observations": 9544,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "single-provider-run-9",
+      "transactions": 10000,
+      "observations": 9582,
+      "finalScores": {
+        "A": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-1",
+      "transactions": 10000,
+      "observations": 9658,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-10",
+      "transactions": 10000,
+      "observations": 9677,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-2",
+      "transactions": 10000,
+      "observations": 9657,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-3",
+      "transactions": 10000,
+      "observations": 9620,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-4",
+      "transactions": 10000,
+      "observations": 9600,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-5",
+      "transactions": 10000,
+      "observations": 9656,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-6",
+      "transactions": 10000,
+      "observations": 9657,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-7",
+      "transactions": 10000,
+      "observations": 9618,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-8",
+      "transactions": 10000,
+      "observations": 9637,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    },
+    {
+      "runId": "static-rule-based-run-9",
+      "transactions": 10000,
+      "observations": 9639,
+      "finalScores": {
+        "A": 0.9999999999999996,
+        "B": 0.9999999999999996,
+        "C": 0.9999999999999996
+      }
+    }
+  ]
+}

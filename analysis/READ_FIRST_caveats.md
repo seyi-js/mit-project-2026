@@ -23,7 +23,8 @@ any single realistic fault is exactly 0.50:
 
 Since the EWMA starts at the neutral 0.5 and blends toward 0.5, HealthScore
 approaches 0.5 asymptotically from above and never crosses it. Observed minimum
-across 9,601 updates on one provider: **0.501313**. A threshold of 0.5 with a
+across all forty runs: **0.500381** (cascading-failover run 9, Provider A,
+transaction 8,296). A threshold of 0.5 with a
 strict `<` comparison therefore cannot fire.
 
 **Report this as a finding.** It means the brief's 0.4/0.6 sensitivity analysis is
@@ -71,7 +72,7 @@ that fails fast looks quicker than one that succeeds slowly.
 
 | Strategy | all tx | successes only | failures only |
 |---|---|---|---|
-| single-provider | 45.3ms | **3.80ms** | 743ms |
+| single-provider | 45.3ms | **3.80ms** | 734ms |
 | static-rule-based | 76.2ms | 50.3ms | 565ms |
 | cascading-failover | 39.1ms | 39.1ms | — |
 | adaptive-health-scored | 15.5ms | 15.5ms | — |
@@ -176,7 +177,7 @@ In order of strength:
    exploration/exploitation tradeoff empirically: ~0.2 percentage points conceded
    under healthy conditions to gain ~19 points under degradation.
 
-1. **First-attempt success rate (whole run): 98.97% (sd 0.16) vs 94.09–94.95%**,
+1. **First-attempt success rate (whole run): 98.98% (sd 0.16) vs 94.09–94.95%**,
    p ≈ 1e-19, Cohen's d = 18–22 against all three baselines. Unconfounded by retries,
    outcome-mixing or event subsetting — this is the measure that isolates routing
    quality from retry capability. Note it is **not** one of Section 7's six DVs; it is
