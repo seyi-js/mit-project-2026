@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adaptive Payment Orchestration — Live</title>
+<style>
+  :root{
+    --ground:#F4F6F5; --surface:#FFFFFF; --ink:#0B1614; --ink-2:#41544F; --ink-3:#6C7F7A;
+    --rule:#DCE3E1; --rule-2:#C3D0CC;
+    --A:#0072B2; --B:#D55E00; --C:#009E73;
+    --good:#0F6F5E; --warn:#9A6300; --bad:#B3261E;
+    --mono:ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+       font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+  .wrap{max-width:1180px;margin:0 auto;padding:20px 22px 48px}
+
+  header{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+         padding-bottom:16px;border-bottom:2px solid var(--ink);margin-bottom:22px}
+  h1{font-size:1.15rem;margin:0;letter-spacing:-.015em}
+  h1 small{display:block;font-weight:400;font-size:.72rem;color:var(--ink-3);letter-spacing:.04em;
+           text-transform:uppercase;margin-top:4px}
+  .controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;font-size:.82rem;padding:7px 13px;border:1px solid var(--rule-2);
+         background:var(--surface);color:var(--ink);border-radius:6px;cursor:pointer}
+  button:hover{border-color:var(--ink-3)}
+  button:focus-visible{outline:2px solid var(--good);outline-offset:2px}
+  button.on{background:var(--good);border-color:var(--good);color:#fff}
+  button.danger{color:var(--bad);border-color:#E7C4BF}
+  select{font:inherit;font-size:.8rem;padding:6px 8px;border:1px solid var(--rule-2);
+         border-radius:6px;background:var(--surface);color:var(--ink)}
+
+  .strategy{display:flex;gap:0;border:1px solid var(--rule-2);border-radius:7px;overflow:hidden}
+  .strategy button{border:0;border-right:1px solid var(--rule-2);border-radius:0;font-size:.78rem}
+  .strategy button:last-child{border-right:0}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+         gap:0;border:1px solid var(--rule);border-radius:9px;background:var(--surface);
+         overflow:hidden;margin-bottom:22px}
+  .stat{padding:14px 16px;border-right:1px solid var(--rule)}
+  .stat:last-child{border-right:0}
+  .stat .v{font-size:1.55rem;font-weight:650;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .stat .l{font-size:.68rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);margin-top:3px}
+
+  .providers{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:14px;margin-bottom:22px}
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px;
+        border-top:3px solid var(--pc)}
+  .card h2{margin:0 0 2px;font-size:.95rem;display:flex;align-items:center;gap:8px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--pc);flex:none}
+  .score{font-size:2.3rem;font-weight:680;letter-spacing:-.035em;font-variant-numeric:tabular-nums;
+         line-height:1.05;margin:8px 0 2px}
+  .meter{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;margin:6px 0 10px}
+  .meter span{display:block;height:100%;background:var(--pc);transition:width .3s}
+  svg.spark{display:block;width:100%;height:46px;margin-bottom:10px}
+  .row{display:flex;justify-content:space-between;align-items:center;gap:8px;
+       font-size:.78rem;color:var(--ink-2);padding:4px 0}
+  .badge{font:600 .66rem/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;
+         padding:4px 7px;border-radius:4px;background:#E9EFED;color:var(--ink-2)}
+  .badge.open{background:#FBE9E7;color:var(--bad)}
+  .badge.half_open{background:#FBF0DC;color:var(--warn)}
+  .badge.faulted{background:#FBE9E7;color:var(--bad)}
+  .faultbar{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--rule)}
+  .faultbar select{flex:1;min-width:0}
+
+  .panels{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+  @media(max-width:860px){.panels{grid-template-columns:1fr}}
+  .panel{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:16px}
+  .panel h3{margin:0 0 12px;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3)}
+
+  .rt{display:flex;height:26px;border-radius:5px;overflow:hidden;background:var(--rule);margin-bottom:8px}
+  .rt i{display:block;transition:width .4s}
+  .rtkey{display:flex;gap:14px;font-size:.74rem;color:var(--ink-2);font-variant-numeric:tabular-nums}
+  .rtkey b{font-weight:600}
+
+  table{width:100%;border-collapse:collapse;font:12px/1.4 var(--mono);font-variant-numeric:tabular-nums}
+  td{padding:4px 6px 4px 0;border-bottom:1px solid var(--rule);white-space:nowrap}
+  td.hop{color:var(--ink-3)}
+  .ok{color:var(--good)} .err{color:var(--bad)} .to{color:var(--warn)}
+  .empty{color:var(--ink-3);font-size:.82rem;padding:10px 0}
+  .offline{background:#FBE9E7;color:var(--bad);padding:9px 13px;border-radius:7px;
+           font-size:.82rem;margin-bottom:16px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Adaptive Payment Orchestration
+    <small>MAPE-K control loop &mdash; live</small></h1>
+  <div class="controls">
+    <div class="strategy" id="strategy"></div>
+    <button id="loadBtn">Start traffic</button>
+    <button id="resetBtn" class="danger">Reset</button>
+  </div>
+</header>
+
+<div class="offline" id="offline">Cannot reach the orchestration service on port 3000.</div>
+
+<div class="stats">
+  <div class="stat"><div class="v" id="s-total">0</div><div class="l">Transactions</div></div>
+  <div class="stat"><div class="v" id="s-first">&mdash;</div><div class="l">First-attempt success</div></div>
+  <div class="stat"><div class="v" id="s-retried">0</div><div class="l">Retried</div></div>
+  <div class="stat"><div class="v" id="s-failed">0</div><div class="l">Failed</div></div>
+</div>
+
+<div class="providers" id="providers"></div>
+
+<div class="panels">
+  <div class="panel">
+    <h3>Where first attempts are going <span style="text-transform:none;letter-spacing:0">(last 60)</span></h3>
+    <div class="rt" id="rt"></div>
+    <div class="rtkey" id="rtkey"></div>
+  </div>
+  <div class="panel">
+    <h3>Transaction feed</h3>
+    <table><tbody id="feed"></tbody></table>
+    <div class="empty" id="feedEmpty">No traffic yet &mdash; press Start traffic.</div>
+  </div>
+</div>
+
+</div>
+<script>
+const COL = { A:'var(--A)', B:'var(--B)', C:'var(--C)' };
+const RAW = { A:'#0072B2', B:'#D55E00', C:'#009E73' };
+let faultTypes = [], strategies = [], booted = false;
+
+const el = (id) => document.getElementById(id);
+const pct = (n) => (n*100).toFixed(1) + '%';
+
+function sparkline(values){
+  if (!values || values.length < 2) return '';
+  const w = 260, h = 46, lo = 0.45, hi = 1.0;
+  const pts = values.map((v,i) => {
+    const x = (i/(values.length-1))*w;
+    const y = h - ((Math.min(Math.max(v,lo),hi)-lo)/(hi-lo))*(h-6) - 3;
+    return x.toFixed(1)+','+y.toFixed(1);
+  }).join(' ');
+  const thresholdY = h - ((0.5-lo)/(hi-lo))*(h-6) - 3;
+  return '<svg class="spark" viewBox="0 0 '+w+' '+h+'" preserveAspectRatio="none">'
+    + '<line x1="0" y1="'+thresholdY.toFixed(1)+'" x2="'+w+'" y2="'+thresholdY.toFixed(1)+'" '
+    + 'stroke="#B3261E" stroke-width="1" stroke-dasharray="3 3" opacity=".55"/>'
+    + '<polyline points="'+pts+'" fill="none" stroke="var(--pc)" stroke-width="1.8" '
+    + 'stroke-linejoin="round" stroke-linecap="round"/></svg>';
+}
+
+// Cards are built once and then updated field-by-field. Replacing innerHTML
+// on every tick would either destroy the fault dropdown while it is in use, or
+// - if guarded against that - freeze the whole panel for as long as the select
+// keeps focus, which is what it did before.
+function buildCard(p){
+  const d = document.createElement('div');
+  d.className = 'card';
+  d.id = 'card-' + p.id;
+  d.style.setProperty('--pc', RAW[p.id]);
+  d.innerHTML =
+      '<h2><span class="dot"></span>Provider ' + p.id
+    + ' <span class="badge faulted" data-f hidden>fault</span></h2>'
+    + '<div class="score" data-score>&mdash;</div>'
+    + '<div class="meter"><span data-meter style="width:0"></span></div>'
+    + '<div data-spark></div>'
+    + '<div class="row"><span>Circuit breaker</span><span class="badge" data-breaker>closed</span></div>'
+    + '<div class="row"><span>Consecutive failures</span><span data-fails>0</span></div>'
+    + '<div class="row"><span>Observations</span><span data-obs>0</span></div>'
+    + '<div class="faultbar"><select data-provider="' + p.id + '">'
+    + ['<option value="">No fault</option>'].concat(
+        faultTypes.map(f => '<option value="' + f + '">' + f.replace(/_/g,' ') + '</option>')).join('')
+    + '</select></div>';
+  return d;
+}
+
+function updateCard(p){
+  const c = document.getElementById('card-' + p.id);
+  if (!c) return;
+  const score = p.healthScore;
+  c.querySelector('[data-score]').textContent = score === null ? '\u2014' : score.toFixed(4);
+  c.querySelector('[data-meter]').style.width =
+    (score === null ? 0 : Math.max(0, Math.min(100, ((score - 0.45) / 0.55) * 100))).toFixed(1) + '%';
+  c.querySelector('[data-spark]').innerHTML = sparkline(p.history);
+  c.querySelector('[data-f]').hidden = !p.fault;
+  const b = c.querySelector('[data-breaker]');
+  b.textContent = p.breaker.replace('_',' ');
+  b.className = 'badge ' + p.breaker;
+  c.querySelector('[data-fails]').textContent = p.consecutiveFailures;
+  c.querySelector('[data-obs]').textContent = p.observations;
+  // Never fight the user for the dropdown they are currently using.
+  const sel = c.querySelector('select');
+  const want = p.fault ? p.fault.faultType : '';
+  if (document.activeElement !== sel && sel.value !== want) sel.value = want;
+}
+
+function feedRow(t){
+  const hops = t.attempts.map(a => {
+    const cls = a.outcome === 'success' ? 'ok' : (a.outcome === 'timeout' ? 'to' : 'err');
+    return '<span class="'+cls+'">'+a.providerId+' '+a.outcome+' '+a.latencyMs+'ms</span>';
+  }).join('<span class="hop"> &rarr; </span>');
+  return '<tr><td>#'+t.index+'</td><td>'+hops+'</td>'
+    + '<td class="'+(t.finalOutcome==='success'?'ok':'err')+'" style="text-align:right">'
+    + t.finalOutcome+'</td></tr>';
+}
+
+async function tick(){
+  let s;
+  try { s = await (await fetch('/api/state')).json(); }
+  catch(_) { el('offline').style.display='block'; return; }
+  el('offline').style.display = s.strategy === null && s.counters.total === 0 ? 'none' : 'none';
+
+  if (!booted){
+    faultTypes = s.faultTypes; strategies = s.strategies;
+    el('strategy').innerHTML = strategies.map(x =>
+      '<button data-strategy="'+x+'">'+x.replace(/-/g,' ')+'</button>').join('');
+    booted = true;
+  }
+  [...el('strategy').children].forEach(b =>
+    b.classList.toggle('on', b.dataset.strategy === s.strategy));
+
+  el('s-total').textContent = s.counters.total;
+  el('s-first').textContent = s.counters.total
+    ? pct(s.counters.firstAttemptSuccess / s.counters.total) : '—';
+  el('s-retried').textContent = s.counters.retried;
+  el('s-failed').textContent = s.counters.failed;
+
+  if (!el('card-A')) {
+    const host = el('providers');
+    host.innerHTML = '';
+    s.providers.forEach(p => host.appendChild(buildCard(p)));
+  }
+  s.providers.forEach(updateCard);
+
+  const n = s.routingWindowSize || 0;
+  el('rt').innerHTML = n === 0 ? '' : ['A','B','C'].map(p =>
+    '<i style="width:'+((s.routing[p]/n)*100).toFixed(1)+'%;background:'+RAW[p]+'"></i>').join('');
+  el('rtkey').innerHTML = ['A','B','C'].map(p =>
+    '<span><b style="color:'+RAW[p]+'">'+p+'</b> '
+    + (n ? Math.round((s.routing[p]/n)*100) : 0) + '%</span>').join('');
+
+  el('feed').innerHTML = s.feed.map(feedRow).join('');
+  el('feedEmpty').style.display = s.feed.length ? 'none' : 'block';
+  el('loadBtn').textContent = s.load.running ? 'Stop traffic' : 'Start traffic';
+  el('loadBtn').classList.toggle('on', s.load.running);
+}
+
+document.addEventListener('click', async (e) => {
+  const sb = e.target.closest('[data-strategy]');
+  if (sb){
+    await fetch('/api/strategy', {method:'PUT',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({strategy: sb.dataset.strategy})});
+    return tick();
+  }
+  if (e.target.id === 'loadBtn'){
+    const running = e.target.classList.contains('on');
+    await fetch('/api/load', {method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({running: !running})});
+    return tick();
+  }
+  if (e.target.id === 'resetBtn'){
+    await fetch('/api/reset', {method:'POST'});
+    return tick();
+  }
+});
+
+document.addEventListener('change', async (e) => {
+  const sel = e.target.closest('[data-provider]');
+  if (!sel) return;
+  const faultType = sel.value || null;
+  const params = faultType === 'elevated_error_rate' ? {errorRate:1}
+               : faultType === 'intermittent_timeout' ? {timeoutRate:0.7}
+               : faultType === 'degraded_latency' ? {latencyMs:2500}
+               : {};
+  await fetch('/api/fault/'+sel.dataset.provider, {
+    method:'PUT', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({faultType, params})});
+  tick();
+});
+
+tick();
+setInterval(tick, 450);
+</script>
+</body>
+</html>

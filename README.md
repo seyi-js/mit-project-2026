@@ -37,7 +37,31 @@ analysis/venv/bin/pip install scipy numpy matplotlib
 
 ## Seeing it work
 
-Two processes. In one terminal, start the three simulated providers:
+The quickest way is the live dashboard:
+
+```bash
+npm run demo
+```
+
+This starts the provider simulators, the orchestration service and a dashboard
+together, and prints a URL (http://127.0.0.1:5050). The dashboard shows each
+provider's health score updating in real time, which strategy is active, where
+first attempts are being routed, and a live transaction feed. Faults can be
+injected into any provider from the page, and the routing strategy switched
+while traffic is running.
+
+It runs against an isolated database (`apo-demo`) which it drops and rebuilds on
+each launch, so a demonstration never modifies the experimental dataset. Ctrl+C
+stops everything.
+
+The dashboard is a separate process that drives the orchestration service over
+HTTP and reads the Knowledge Store for display. It imports none of the modules
+whose behaviour Chapter 4 measures, so it cannot affect the evaluated code path.
+
+### Driving the service directly
+
+
+To drive the API by hand instead, start the two processes yourself. In one terminal:
 
 ```bash
 npm run start:providers       # port 4000

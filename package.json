@@ -17,7 +17,8 @@
     "analyse:stats": "analysis/venv/bin/python analysis/statistics.py",
     "analyse:sensitivity": "node src/analysis/sensitivity.js",
     "analyse:conditions": "node src/analysis/conditionSplit.js",
-    "evidence": "node src/evidence/captureEvidence.js"
+    "evidence": "node src/evidence/captureEvidence.js",
+    "demo": "node src/demo/start.js"
   },
   "repository": {
     "type": "git",
