@@ -1,0 +1,11 @@
+node_modules
+.git
+.env
+analysis/venv
+analysis/transaction_data.csv
+analysis/health_timeseries
+analysis/figures
+analysis/evidence
+tests
+*.log
+.DS_Store

@@ -203,8 +203,11 @@ function feedRow(t){
 async function tick(){
   let s;
   try { s = await (await fetch('/api/state')).json(); }
-  catch(_) { el('offline').style.display='block'; return; }
-  el('offline').style.display = s.strategy === null && s.counters.total === 0 ? 'none' : 'none';
+  catch(_) {
+    el('offline').textContent = 'Cannot reach the dashboard server.';
+    el('offline').style.display='block'; return; }
+  el('offline').textContent = s.error || '';
+  el('offline').style.display = s.error ? 'block' : 'none';
 
   if (!booted){
     faultTypes = s.faultTypes; strategies = s.strategies;

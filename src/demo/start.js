@@ -7,10 +7,27 @@
 require('dotenv').config();
 const { spawn } = require('child_process');
 const mongoose = require('mongoose');
+const { ensureRoutingConfigExists } = require('../experiment/routingConfig');
 
-const DEMO_URI = process.env.DEMO_MONGODB_URI || 'mongodb://127.0.0.1:27017/apo-demo';
-const API = 'http://127.0.0.1:3000';
-const DASHBOARD = `http://127.0.0.1:${process.env.DEMO_PORT || 5050}`;
+// On a hosting platform only one port is publicly routed, and it arrives as
+// PORT. The dashboard takes it; the orchestration service and the provider
+// simulators are bound to fixed loopback ports that are never exposed.
+const PUBLIC_PORT = process.env.PORT || process.env.DEMO_PORT || 5050;
+const INTERNAL_API_PORT = 3000;
+const INTERNAL_PROVIDERS_PORT = 4000;
+
+// The demonstration database is chosen deliberately, never inherited by
+// accident: an explicit DEMO_MONGODB_URI wins; a MONGODB_URI is only accepted
+// if it actually names a demo database; otherwise a local default is used. The
+// name guard in main() is the backstop, since this script drops the database.
+function pickDemoUri() {
+  if (process.env.DEMO_MONGODB_URI) return process.env.DEMO_MONGODB_URI;
+  if (process.env.MONGODB_URI && /demo/i.test(process.env.MONGODB_URI)) return process.env.MONGODB_URI;
+  return 'mongodb://127.0.0.1:27017/apo-demo';
+}
+const DEMO_URI = pickDemoUri();
+const API = `http://127.0.0.1:${INTERNAL_API_PORT}`;
+const DASHBOARD = `http://127.0.0.1:${PUBLIC_PORT}`;
 
 const children = [];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -43,15 +60,37 @@ async function main() {
   console.log('Starting demonstration environment...');
   console.log(`  database: ${DEMO_URI}  (isolated - the experimental dataset is untouched)`);
 
-  // A demonstration starts from a clean slate every time.
+  // A demonstration starts from a clean slate every time. The name guard is a
+  // hard stop: this script drops a database, and must never be able to drop the
+  // one holding the experimental dataset, however the URI is configured.
   await mongoose.connect(DEMO_URI);
+  const dbName = mongoose.connection.db.databaseName;
+  if (!/demo/i.test(dbName)) {
+    console.error(`Refusing to reset database "${dbName}": the demo database name must contain "demo".`);
+    await mongoose.disconnect();
+    return shutdown();
+  }
   await mongoose.connection.db.dropDatabase();
+
+  // The static rule-based strategy reads its fixed traffic split from the
+  // RoutingConfig collection and throws without it. The experiment seeds this
+  // in experimentRunner; a demonstration must too, and via the same function so
+  // the split shown here is the 50/30/20 recorded in Section 4.2.6.
+  await ensureRoutingConfigExists();
+
   await mongoose.disconnect();
 
-  const env = { ...process.env, MONGODB_URI: DEMO_URI };
+  const env = {
+    ...process.env,
+    MONGODB_URI: DEMO_URI,
+    PORT: String(INTERNAL_API_PORT),
+    PROVIDERS_PORT: String(INTERNAL_PROVIDERS_PORT),
+  };
   start('providers', 'src/providers/server.js', env);
   start('orchestration service', 'src/server.js', env);
-  start('dashboard', 'src/demo/server.js', env);
+  // The dashboard is the only process the outside world reaches, so it takes
+  // the public port rather than the internal one the other two share.
+  start('dashboard', 'src/demo/server.js', { ...env, PORT: String(PUBLIC_PORT) });
 
   const ok = await waitFor(`${API}/health`) && await waitFor(`${DASHBOARD}/api/state`);
   if (!ok) {
@@ -66,7 +105,7 @@ async function main() {
   });
 
   console.log('');
-  console.log(`  Dashboard:  ${DASHBOARD}`);
+  console.log(`  Dashboard listening on port ${PUBLIC_PORT}`);
   console.log('');
   console.log('  Press Ctrl+C to stop.');
 }

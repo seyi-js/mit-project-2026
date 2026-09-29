@@ -17,7 +17,7 @@ const ProviderHealth = require('../models/ProviderHealth');
 const CircuitBreakerState = require('../models/CircuitBreakerState');
 const TransactionLog = require('../models/TransactionLog');
 
-const PORT = process.env.DEMO_PORT || 5050;
+const PORT = process.env.PORT || process.env.DEMO_PORT || 5050;
 const API = process.env.DEMO_API_URL || 'http://127.0.0.1:3000';
 const PROV = process.env.DEMO_PROVIDERS_URL || 'http://127.0.0.1:4000';
 
@@ -30,6 +30,7 @@ let counters = { total: 0, firstAttemptSuccess: 0, retried: 0, failed: 0 };
 const routingWindow = [];  // first-attempt provider over the last N transactions
 const ROUTING_WINDOW = 60;
 let load = { running: false, timer: null, ratePerSecond: 6, index: 0 };
+let lastError = null;   // surfaced on the dashboard: a silent failure once hid a real bug
 
 async function submitTransaction() {
   try {
@@ -38,7 +39,12 @@ async function submitTransaction() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ runId: 'demo', transactionIndex: load.index += 1 }),
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      lastError = body.error || `Transaction rejected (HTTP ${res.status})`;
+      return;
+    }
+    lastError = null;
     const tx = await res.json();
 
     counters.total += 1;
@@ -61,7 +67,9 @@ async function submitTransaction() {
       })),
     });
     if (feed.length > FEED_LIMIT) feed.length = FEED_LIMIT;
-  } catch (_) { /* service not up yet; the dashboard shows the disconnected state */ }
+  } catch (err) {
+    lastError = `Cannot reach the orchestration service: ${err.message}`;
+  }
 }
 
 function startLoad() {
@@ -127,6 +135,7 @@ function createApp() {
       ),
       routingWindowSize: routingWindow.length,
       load: { running: load.running, ratePerSecond: load.ratePerSecond },
+      error: lastError,
     });
   });
 
@@ -161,6 +170,7 @@ function createApp() {
 
   app.post('/api/reset', async (req, res) => {
     stopLoad();
+    lastError = null;
     await Promise.all([
       ProviderHealth.deleteMany({}),
       CircuitBreakerState.deleteMany({}),

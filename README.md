@@ -173,6 +173,32 @@ requests and responses for each component of the framework. It runs against an
 isolated database (`apo-evidence`) which it drops and rebuilds each time, so the
 experimental dataset is never modified.
 
+## Deploying the demonstration
+
+The demonstration stack runs the prototype and its database together on a single
+host, pinned to the versions in [ENVIRONMENT.md](ENVIRONMENT.md):
+
+```bash
+docker compose up -d --build
+```
+
+The dashboard is then served on port 80. MongoDB is not published to the host;
+only the application container reaches it.
+
+The database is co-located deliberately. The adaptive strategy reads
+ProviderHealth on every routing decision, and Section 4.5.6 attributes roughly
+11.67 ms of its mean response time to that query against a local MongoDB. A
+managed database reached over the network would add a round trip to every
+routing decision, and the demonstration's response times would no longer agree
+with the reported results.
+
+**This stack is for demonstration only.** The reported experiment was executed
+natively on the machine recorded in Table 4.1, with the software and hardware
+environment fixed as a controlled variable per Section 3.8. It was not run in a
+container and should not be re-run in one: the reported latencies, on which the
+health score and two dependent variables depend, are properties of that
+environment.
+
 ## Repository layout
 
 ```

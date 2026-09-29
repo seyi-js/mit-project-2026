@@ -1,0 +1,44 @@
+# Demonstration stack: the prototype and its database on a single host.
+#
+# The database is deliberately co-located with the application rather than
+# hosted remotely. The adaptive routing strategy reads ProviderHealth on every
+# routing decision, and Section 4.5.6 attributes roughly 11.67 ms of its mean
+# response time to that query against a local MongoDB. A managed database
+# reached over the network would add a round trip to every routing decision and
+# make the demonstration's response times disagree with the reported results.
+#
+# Versions are pinned to those recorded in ENVIRONMENT.md. This stack is for
+# demonstration only; the reported experiment was executed natively, not here.
+
+services:
+  mongo:
+    image: mongo:8.0.1
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    # Not published to the host: only the application container reaches it.
+    expose:
+      - "27017"
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 20s
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      # The database name must contain "demo": src/demo/start.js resets it on
+      # every launch and refuses to touch a database not named as one.
+      DEMO_MONGODB_URI: mongodb://mongo:27017/apo-demo
+      PORT: "5050"
+    ports:
+      - "80:5050"
+
+volumes:
+  mongo-data:
