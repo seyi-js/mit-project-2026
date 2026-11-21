@@ -28,3 +28,12 @@
 
 /analysis/evidence/screenshots
 /analysis/evidence/walkthrough
+# --- dissertation documents and working files --------------------------------
+# Slide decks, paper drafts, templates, raw questionnaire responses and write-up
+# drafts. Kept locally; not part of the artefact under review.
+/*.pptx
+/*.pdf
+/*.docx
+/*.csv
+/analysis/presentation-*/
+/analysis/writeup-revisions/
