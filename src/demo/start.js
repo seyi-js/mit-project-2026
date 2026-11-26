@@ -12,9 +12,19 @@ const { ensureRoutingConfigExists } = require('../experiment/routingConfig');
 // On a hosting platform only one port is publicly routed, and it arrives as
 // PORT. The dashboard takes it; the orchestration service and the provider
 // simulators are bound to fixed loopback ports that are never exposed.
-const PUBLIC_PORT = process.env.PORT || process.env.DEMO_PORT || 5050;
 const INTERNAL_API_PORT = 3000;
 const INTERNAL_PROVIDERS_PORT = 4000;
+// A local .env usually sets PORT=3000 for `npm start`; taking that for the
+// dashboard would collide with the orchestration service on the same port. So
+// DEMO_PORT wins, PORT is used only if it is free of the internal ports, and
+// otherwise the dashboard falls back to 5050.
+function pickPublicPort() {
+  if (process.env.DEMO_PORT) return Number(process.env.DEMO_PORT);
+  const port = Number(process.env.PORT);
+  if (port && port !== INTERNAL_API_PORT && port !== INTERNAL_PROVIDERS_PORT) return port;
+  return 5050;
+}
+const PUBLIC_PORT = pickPublicPort();
 
 // The demonstration database is chosen deliberately, never inherited by
 // accident: an explicit DEMO_MONGODB_URI wins; a MONGODB_URI is only accepted

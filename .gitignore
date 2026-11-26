@@ -37,3 +37,8 @@
 /*.csv
 /analysis/presentation-*/
 /analysis/writeup-revisions/
+
+# --- viva preparation notes --------------------------------------------------
+# Personal defence script and explainer. Kept locally; not part of the artefact.
+/DEFENCE-SCRIPT.md
+/PROJECT-EXPLAINED.md
